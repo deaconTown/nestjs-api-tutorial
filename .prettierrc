@@ -1,0 +1,12 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "rules": {
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "tab": "2"
+  }
+}
