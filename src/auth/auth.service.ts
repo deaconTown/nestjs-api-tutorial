@@ -35,7 +35,34 @@ export class AuthService {
     }
   }
 
-  signin() {
-    return { msg: 'I am signed in' };
+  async signin(dto: AuthDto) {
+    try {
+      // find the user by email
+      // //if user does not exist, throw exception
+      const user = await this.prismaService.user.findUniqueOrThrow({
+        where: {
+          email: dto.email,
+        },
+      });
+
+      //compare password
+      const pwMatches = await argon2.verify(user.hash, dto.password);
+      //if password does not match, throw exception
+      if (!pwMatches) {
+        console.log(pwMatches, 'pwMathes');
+        throw new ForbiddenException('Credentials invalid');
+      }
+
+      //return user
+      return { msg: 'I am signed in' };
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new ForbiddenException('No user with this email');
+        }
+      } else {
+        throw error;
+      }
+    }
   }
 }
