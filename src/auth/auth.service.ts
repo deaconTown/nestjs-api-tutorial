@@ -54,7 +54,12 @@ export class AuthService {
       }
 
       //return user
-      return { msg: 'I am signed in' };
+      //remove hash from user being returned
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { hash, ...signedInUser } = user;
+
+      //return saved user
+      return signedInUser;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
